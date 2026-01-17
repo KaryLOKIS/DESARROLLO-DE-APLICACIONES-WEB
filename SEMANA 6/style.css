@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f4f6fb;
+  margin: 0;
+  padding: 30px;
+}
+
+.container {
+  max-width: 500px;
+  background: white;
+  margin: auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+}
+
+.campo {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  outline: none;
+}
+
+input:focus {
+  border-color: #467aff;
+}
+
+input.valid {
+  border-color: rgb(54, 225, 7);
+}
+
+input.invalido {
+  border-color: rgb(225, 0, 255);
+}
+
+small.error {
+  color: red;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#btnEnviar {
+  background: #f013b5;
+  color: white;
+}
+
+button.secondary {
+  background: #e5e9f5;
+}
+
+button:disabled {
+  background: #a8baf0;
+  cursor: not-allowed;
+}
+
+.msg {
+  margin-top: 15px;
+  font-weight: bold;
+  color: rgb(236, 130, 8);
+  text-align: center;
+}
