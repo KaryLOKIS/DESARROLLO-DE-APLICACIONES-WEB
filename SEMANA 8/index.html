@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>SEMANA 8</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">Mi Sitio Web</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== CONTENIDO ===== -->
+<div class="container my-4">
+
+  <!-- Carrusel -->
+  <div id="carouselExample" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="https://picsum.photos/800/300?1" class="d-block w-100" alt="img1">
+      </div>
+      <div class="carousel-item">
+        <img src="https://picsum.photos/800/300?2" class="d-block w-100" alt="img2">
+      </div>
+      <div class="carousel-item">
+        <img src="https://picsum.photos/800/300?3" class="d-block w-100" alt="img3">
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <h3 class="mb-3">Lista de Productos</h3>
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Stock</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Teclado</td>
+        <td>$25</td>
+        <td>15</td>
+      </tr>
+      <tr>
+        <td>Mouse</td>
+        <td>$12</td>
+        <td>30</td>
+      </tr>
+      <tr>
+        <td>Monitor</td>
+        <td>$180</td>
+        <td>8</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Botón alerta -->
+  <button id="btnAlerta" class="btn btn-warning mb-4">
+    Mostrar alerta
+  </button>
+
+  <!-- Formulario -->
+  <h3>Formulario de Contacto</h3>
+  <form id="contactoForm" novalidate>
+    <div class="mb-3">
+      <label class="form-label">Nombre</label>
+      <input type="text" class="form-control" id="nombre">
+      <small class="text-danger" id="errorNombre"></small>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Correo</label>
+      <input type="email" class="form-control" id="correo">
+      <small class="text-danger" id="errorCorreo"></small>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Mensaje</label>
+      <textarea class="form-control" id="mensaje"></textarea>
+      <small class="text-danger" id="errorMensaje"></small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+    <p id="msgExito" class="mt-3"></p>
+  </form>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer text-center p-3">
+  <p>© 2026 - Contacto: redes@miweb.com</p>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
