@@ -1,26 +1,31 @@
-from flask import Flask
+from flask import Flask, render_template
+
+print("ESTE ES MI APP CORRECTO")
 
 app = Flask(__name__)
 
-# Ruta principal
+# Página principal
 @app.route("/")
 def inicio():
-    return "Bienvenido a Mundo Mascotas  - Tu tienda online de accesorios, ropa y comida para mascotas"
+    return render_template("index.html")
 
-# Ruta de productos
-@app.route("/productos")
+# Página acerca de
+@app.route("/about/")
+def about():
+    return render_template("about.html")
+
+# Página productos
+@app.route("/productos/")
 def productos():
-    return "Categorías disponibles: Comida , Ropa , Accesorios , Juguetes "
+    lista_productos = ["Collar", "Comida Premium", "Ropa para perro", "Juguete"]
+    return render_template("productos.html", productos=lista_productos)
 
-# Ruta dinámica para productos
-@app.route("/producto/<nombre>")
+# Ruta dinámica
+@app.route("/producto/<nombre>/")
 def producto(nombre):
-    return f"Producto: {nombre} – disponible en Mundo Mascotas "
+    return f"Producto: {nombre} – disponible en Mundo Mascotas 🐾"
 
-# Ruta dinámica para clientes (opcional pero suma puntos)
-@app.route("/cliente/<nombre>")
-def cliente(nombre):
-    return f"Bienvenido, {nombre}. Gracias por visitar Mundo Mascotas "
+print(app.url_map)   # ✅ AQUÍ AL FINAL
 
 if __name__ == "__main__":
     app.run(debug=True)
