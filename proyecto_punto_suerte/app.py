@@ -12,6 +12,19 @@ crear_tabla()
 def inicio():
     return render_template("index.html")
 
+@app.route("/inventario")
+def inventario():
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM productos")
+    productos = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("inventario.html", productos=productos)
+
 # Página Acerca de
 @app.route("/about")
 def about():
