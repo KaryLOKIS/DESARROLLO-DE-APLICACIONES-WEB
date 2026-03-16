@@ -1,7 +1,11 @@
 from flask import Flask, render_template
 import os
 
+from database import crear_tabla, conectar
+
 app = Flask(__name__)
+
+crear_tabla()
 
 # Página principal
 @app.route("/")
