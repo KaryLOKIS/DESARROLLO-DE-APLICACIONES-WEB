@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 import os
 
 from database import crear_tabla, conectar
@@ -24,6 +24,29 @@ def inventario():
     conn.close()
 
     return render_template("inventario.html", productos=productos)
+
+@app.route("/agregar_producto", methods=["GET", "POST"])
+def agregar_producto():
+
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        cantidad = request.form["cantidad"]
+        precio = request.form["precio"]
+
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO productos (nombre, cantidad, precio) VALUES (?, ?, ?)",
+            (nombre, cantidad, precio)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/inventario")
+
+    return render_template("agregar_producto.html")
 
 # Página Acerca de
 @app.route("/about")
