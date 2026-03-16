@@ -15,10 +15,19 @@ def inicio():
 @app.route("/inventario")
 def inventario():
 
+    buscar = request.args.get("buscar")
+
     conn = conectar()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM productos")
+    if buscar:
+        cursor.execute(
+            "SELECT * FROM productos WHERE nombre LIKE ?",
+            ('%' + buscar + '%',)
+        )
+    else:
+        cursor.execute("SELECT * FROM productos")
+
     productos = cursor.fetchall()
 
     conn.close()
