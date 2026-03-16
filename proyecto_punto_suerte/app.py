@@ -59,7 +59,36 @@ def eliminar_producto(id):
     conn.commit()
     conn.close()
 
-    return redirect("/inventario")    
+    return redirect("/inventario") 
+
+@app.route("/editar_producto/<int:id>", methods=["GET", "POST"])
+def editar_producto(id):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+
+        nombre = request.form["nombre"]
+        cantidad = request.form["cantidad"]
+        precio = request.form["precio"]
+
+        cursor.execute(
+            "UPDATE productos SET nombre=?, cantidad=?, precio=? WHERE id=?",
+            (nombre, cantidad, precio, id)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/inventario")
+
+    cursor.execute("SELECT * FROM productos WHERE id=?", (id,))
+    producto = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("editar_producto.html", producto=producto)       
 
 # Página Acerca de
 @app.route("/about")
