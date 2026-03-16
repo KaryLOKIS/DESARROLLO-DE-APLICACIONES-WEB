@@ -48,6 +48,19 @@ def agregar_producto():
 
     return render_template("agregar_producto.html")
 
+@app.route("/eliminar_producto/<int:id>")
+def eliminar_producto(id):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM productos WHERE id = ?", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/inventario")    
+
 # Página Acerca de
 @app.route("/about")
 def about():

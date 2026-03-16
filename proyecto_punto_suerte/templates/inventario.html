@@ -11,6 +11,7 @@
 <th>Nombre</th>
 <th>Cantidad</th>
 <th>Precio</th>
+<th>Acciones</th>
 </tr>
 
 {% for producto in productos %}
@@ -20,6 +21,11 @@
 <td>{{ producto[1] }}</td>
 <td>{{ producto[2] }}</td>
 <td>{{ producto[3] }}</td>
+
+<td>
+<a href="/eliminar_producto/{{ producto[0] }}">Eliminar</a>
+</td>
+
 </tr>
 
 {% endfor %}
