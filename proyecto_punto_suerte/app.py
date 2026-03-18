@@ -44,11 +44,11 @@ def agregar_producto():
         cantidad = request.form["cantidad"]
         precio = request.form["precio"]
 
-        # ✅ GUARDAR EN TXT
+        # ✅ TXT
         with open("inventario/data/datos.txt", "a") as archivo:
             archivo.write(f"{nombre},{cantidad},{precio}\n")
 
-        # ✅ GUARDAR EN JSON
+        # ✅ JSON
         ruta_json = "inventario/data/datos.json"
 
         try:
@@ -68,7 +68,7 @@ def agregar_producto():
         with open(ruta_json, "w") as archivo:
             json.dump(datos, archivo, indent=4)
 
-        # ✅ GUARDAR EN SQLITE
+        # ✅ SQLITE
         conn = conectar()
         cursor = conn.cursor()
 

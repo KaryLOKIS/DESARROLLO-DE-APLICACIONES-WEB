@@ -1,2 +1,3 @@
 Loteria,7,1.00
 Loteria,20,2.00
+Gran Lotto,50,3.00
