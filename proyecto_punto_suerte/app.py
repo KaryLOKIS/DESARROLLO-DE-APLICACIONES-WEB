@@ -40,6 +40,8 @@ def inventario():
 def agregar_producto():
 
     if request.method == "POST":
+        print("ENTRÓ AL POST")
+        
         nombre = request.form["nombre"]
         cantidad = request.form["cantidad"]
         precio = request.form["precio"]
