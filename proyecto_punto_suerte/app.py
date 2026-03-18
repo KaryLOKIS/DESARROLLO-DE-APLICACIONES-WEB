@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect
 import os
 
+import json
+
 from database import crear_tabla, conectar
 
 app = Flask(__name__)
@@ -42,11 +44,31 @@ def agregar_producto():
         cantidad = request.form["cantidad"]
         precio = request.form["precio"]
 
-        # GUARDAR EN TXT
+        # ✅ GUARDAR EN TXT
         with open("inventario/data/datos.txt", "a") as archivo:
             archivo.write(f"{nombre},{cantidad},{precio}\n")
 
-        # GUARDAR EN SQLITE
+        # ✅ GUARDAR EN JSON
+        ruta_json = "inventario/data/datos.json"
+
+        try:
+            with open(ruta_json, "r") as archivo:
+                datos = json.load(archivo)
+        except:
+            datos = []
+
+        nuevo_producto = {
+            "nombre": nombre,
+            "cantidad": cantidad,
+            "precio": precio
+        }
+
+        datos.append(nuevo_producto)
+
+        with open(ruta_json, "w") as archivo:
+            json.dump(datos, archivo, indent=4)
+
+        # ✅ GUARDAR EN SQLITE
         conn = conectar()
         cursor = conn.cursor()
 
