@@ -42,11 +42,11 @@ def agregar_producto():
         cantidad = request.form["cantidad"]
         precio = request.form["precio"]
 
+        # GUARDAR EN TXT
+        with open("inventario/data/datos.txt", "a") as archivo:
+            archivo.write(f"{nombre},{cantidad},{precio}\n")
 
-# GUARDAR EN TXT
-with open("inventario/data/datos.txt", "a") as archivo:
-    archivo.write(f"{nombre},{cantidad},{precio}\n")        
-
+        # GUARDAR EN SQLITE
         conn = conectar()
         cursor = conn.cursor()
 
