@@ -44,6 +44,8 @@ def agregar_producto():
         cantidad = request.form["cantidad"]
         precio = request.form["precio"]
 
+        print("🔥 GUARDANDO PRODUCTO...")  # 👈 para probar
+
         # ✅ TXT
         with open("inventario/data/datos.txt", "a") as archivo:
             archivo.write(f"{nombre},{cantidad},{precio}\n")
