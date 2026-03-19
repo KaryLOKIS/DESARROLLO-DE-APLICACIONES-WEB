@@ -56,8 +56,8 @@ def agregar_producto():
 
         # GUARDAR EN CSV
         with open("inventario/data/datos.csv", "a", newline="") as archivo:
-        writer = csv.writer(archivo)
-        writer.writerow([nombre, cantidad, precio])    
+            writer = csv.writer(archivo)
+            writer.writerow([nombre, cantidad, precio])    
 
         #  JSON
         ruta_json = "inventario/data/datos.json"
@@ -151,6 +151,36 @@ def productos():
 @app.route("/producto/<nombre>")
 def producto(nombre):
     return render_template("producto_individual.html", nombre=nombre)
+
+@app.route("/datos")
+def ver_datos():
+
+    # TXT
+    with open("inventario/data/datos.txt", "r") as archivo:
+        datos_txt = archivo.readlines()
+
+    # JSON
+    import json
+    try:
+        with open("inventario/data/datos.json", "r") as archivo:
+            datos_json = json.load(archivo)
+    except:
+        datos_json = []
+
+    # CSV
+    import csv
+    datos_csv = []
+    with open("inventario/data/datos.csv", "r") as archivo:
+        reader = csv.reader(archivo)
+        for fila in reader:
+            datos_csv.append(fila)
+
+    return render_template(
+        "datos.html",
+        datos_txt=datos_txt,
+        datos_json=datos_json,
+        datos_csv=datos_csv
+    )    
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

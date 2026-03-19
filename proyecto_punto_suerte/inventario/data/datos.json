@@ -1,1 +1,12 @@
-[ ]
+[
+    {
+        "nombre": "Pozo Millonario",
+        "cantidad": "200",
+        "precio": "1.00"
+    },
+    {
+        "nombre": "Super Lotto ",
+        "cantidad": "100",
+        "precio": "2.00"
+    }
+]
