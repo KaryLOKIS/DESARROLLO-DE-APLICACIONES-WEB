@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect
 import os
 
+import csv
+
 import json
 
 from database import crear_tabla, conectar
@@ -48,11 +50,16 @@ def agregar_producto():
 
         print("🔥 GUARDANDO PRODUCTO...")  # 👈 para probar
 
-        # ✅ TXT
+        #  TXT
         with open("inventario/data/datos.txt", "a") as archivo:
             archivo.write(f"{nombre},{cantidad},{precio}\n")
 
-        # ✅ JSON
+        # GUARDAR EN CSV
+        with open("inventario/data/datos.csv", "a", newline="") as archivo:
+        writer = csv.writer(archivo)
+        writer.writerow([nombre, cantidad, precio])    
+
+        #  JSON
         ruta_json = "inventario/data/datos.json"
 
         try:
@@ -72,7 +79,7 @@ def agregar_producto():
         with open(ruta_json, "w") as archivo:
             json.dump(datos, archivo, indent=4)
 
-        # ✅ SQLITE
+        #  SQLITE
         conn = conectar()
         cursor = conn.cursor()
 

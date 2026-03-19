@@ -3,3 +3,5 @@ Loteria,20,2.00
 Gran Lotto,50,3.00
 Raspaditas ,20,1.00
 Pozo Revancha,20,0.50
+Loteria Madre,200,2.00
+Gran Lotto,2,2.00
