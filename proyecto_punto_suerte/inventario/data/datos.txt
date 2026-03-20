@@ -7,3 +7,5 @@ Loteria Madre,200,2.00
 Gran Lotto,2,2.00
 Pozo Millonario,200,1.00
 Super Lotto ,100,2.00
+Raspaditas Cchanchito,200,0.50
+Pozo Revancha,100,0.50

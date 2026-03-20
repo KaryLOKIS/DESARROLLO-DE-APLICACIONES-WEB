@@ -7,7 +7,16 @@ import json
 
 from database import crear_tabla, conectar
 
+from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///inventario.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+from models import Producto
 
 crear_tabla()
 
@@ -21,20 +30,12 @@ def inventario():
 
     buscar = request.args.get("buscar")
 
-    conn = conectar()
-    cursor = conn.cursor()
-
     if buscar:
-        cursor.execute(
-            "SELECT * FROM productos WHERE nombre LIKE ?",
-            ('%' + buscar + '%',)
-        )
+        productos = Producto.query.filter(
+            Producto.nombre.like(f"%{buscar}%")
+        ).all()
     else:
-        cursor.execute("SELECT * FROM productos")
-
-    productos = cursor.fetchall()
-
-    conn.close()
+        productos = Producto.query.all()
 
     return render_template("inventario.html", productos=productos)
 
@@ -79,17 +80,14 @@ def agregar_producto():
         with open(ruta_json, "w") as archivo:
             json.dump(datos, archivo, indent=4)
 
-        #  SQLITE
-        conn = conectar()
-        cursor = conn.cursor()
-
-        cursor.execute(
-            "INSERT INTO productos (nombre, cantidad, precio) VALUES (?, ?, ?)",
-            (nombre, cantidad, precio)
+        nuevo = Producto(
+            nombre=nombre,
+            cantidad=cantidad,
+            precio=precio
         )
 
-        conn.commit()
-        conn.close()
+        db.session.add(nuevo)
+        db.session.commit()
 
         return redirect("/inventario")
 
@@ -98,42 +96,28 @@ def agregar_producto():
 @app.route("/eliminar_producto/<int:id>")
 def eliminar_producto(id):
 
-    conn = conectar()
-    cursor = conn.cursor()
+    producto = Producto.query.get(id)
 
-    cursor.execute("DELETE FROM productos WHERE id = ?", (id,))
-
-    conn.commit()
-    conn.close()
+    if producto:
+        db.session.delete(producto)
+        db.session.commit()
 
     return redirect("/inventario") 
 
 @app.route("/editar_producto/<int:id>", methods=["GET", "POST"])
 def editar_producto(id):
 
-    conn = conectar()
-    cursor = conn.cursor()
+    producto = Producto.query.get(id)
 
     if request.method == "POST":
 
-        nombre = request.form["nombre"]
-        cantidad = request.form["cantidad"]
-        precio = request.form["precio"]
+        producto.nombre = request.form["nombre"]
+        producto.cantidad = request.form["cantidad"]
+        producto.precio = request.form["precio"]
 
-        cursor.execute(
-            "UPDATE productos SET nombre=?, cantidad=?, precio=? WHERE id=?",
-            (nombre, cantidad, precio, id)
-        )
-
-        conn.commit()
-        conn.close()
+        db.session.commit()
 
         return redirect("/inventario")
-
-    cursor.execute("SELECT * FROM productos WHERE id=?", (id,))
-    producto = cursor.fetchone()
-
-    conn.close()
 
     return render_template("editar_producto.html", producto=producto)       
 
@@ -151,6 +135,7 @@ def productos():
 @app.route("/producto/<nombre>")
 def producto(nombre):
     return render_template("producto_individual.html", nombre=nombre)
+
 
 @app.route("/datos")
 def ver_datos():
@@ -181,6 +166,9 @@ def ver_datos():
         datos_json=datos_json,
         datos_csv=datos_csv
     )    
+
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

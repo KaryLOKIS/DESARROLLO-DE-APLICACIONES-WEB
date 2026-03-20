@@ -8,5 +8,15 @@
         "nombre": "Super Lotto ",
         "cantidad": "100",
         "precio": "2.00"
+    },
+    {
+        "nombre": "Raspaditas Cchanchito",
+        "cantidad": "200",
+        "precio": "0.50"
+    },
+    {
+        "nombre": "Pozo Revancha",
+        "cantidad": "100",
+        "precio": "0.50"
     }
 ]
