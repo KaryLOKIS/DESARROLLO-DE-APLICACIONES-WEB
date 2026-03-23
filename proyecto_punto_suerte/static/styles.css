@@ -1,31 +1,30 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f6f9;
+    background: #f4f6f9;
     margin: 0;
 }
 
-/* CONTENEDOR PRINCIPAL */
 .container {
     width: 90%;
-    max-width: 1000px;
-    margin: 30px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin: auto;
 }
 
-/* HEADER */
 header {
-    background-color: #2c3e50;
+    background: #2c3e50;
     color: white;
     padding: 15px;
-    border-radius: 10px 10px 0 0;
 }
 
-/* MENU */
+header h1 {
+    margin: 0;
+}
+
+nav {
+    margin-top: 10px;
+}
+
 nav a {
-    color: #3498db;
+    color: white;
     margin-right: 15px;
     text-decoration: none;
     font-weight: bold;
@@ -35,20 +34,20 @@ nav a:hover {
     text-decoration: underline;
 }
 
-/* TITULOS */
-h2 {
+main {
+    background: white;
+    padding: 20px;
     margin-top: 20px;
+    border-radius: 10px;
 }
 
-/* TABLA */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
 }
 
 table th {
-    background-color: #3498db;
+    background: #34495e;
     color: white;
     padding: 10px;
 }
@@ -58,39 +57,20 @@ table td {
     border-bottom: 1px solid #ddd;
 }
 
-/* BOTONES */
 button {
-    background-color: #3498db;
+    background: #3498db;
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 8px 15px;
     border-radius: 5px;
-    cursor: pointer;
 }
 
 button:hover {
-    background-color: #2980b9;
+    background: #2980b9;
 }
 
-/* INPUTS */
 input {
     padding: 8px;
+    margin-bottom: 10px;
     width: 100%;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-/* FORM */
-form {
-    max-width: 400px;
-}
-
-/* LINKS DE ACCIONES */
-a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
 }

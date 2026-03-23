@@ -18,5 +18,30 @@
         "nombre": "Pozo Revancha",
         "cantidad": "100",
         "precio": "0.50"
+    },
+    {
+        "nombre": "Pozo Revancha",
+        "cantidad": "50",
+        "precio": "0.50"
+    },
+    {
+        "nombre": "Pozo Revancha",
+        "cantidad": "20",
+        "precio": "0.50"
+    },
+    {
+        "nombre": "Raspadita Chachito de la Suerte",
+        "cantidad": "100",
+        "precio": "0.50"
+    },
+    {
+        "nombre": "Loteria Madre",
+        "cantidad": "200",
+        "precio": "2.00"
+    },
+    {
+        "nombre": "Super Lotto ",
+        "cantidad": "200",
+        "precio": "2.00"
     }
 ]
