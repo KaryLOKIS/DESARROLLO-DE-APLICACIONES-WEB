@@ -9,7 +9,7 @@
 <button type="submit">Buscar</button>
 </form>
 
-<table border="1">
+<table>
 
 <tr>
 <th>ID</th>
@@ -23,14 +23,14 @@
 
 <tr>
 
-<td>{{ producto[0] }}</td>
-<td>{{ producto[1] }}</td>
-<td>{{ producto[2] }}</td>
-<td>{{ producto[3] }}</td>
+<td>{{ producto.id }}</td>
+<td>{{ producto.nombre }}</td>
+<td>{{ producto.cantidad }}</td>
+<td>${{ producto.precio }}</td>
 
 <td>
-<a href="/editar_producto/{{ producto[0] }}">Editar</a> |
-<a href="/eliminar_producto/{{ producto[0] }}">Eliminar</a>
+<a href="/editar_producto/{{ producto.id }}">Editar</a> |
+<a href="/eliminar_producto/{{ producto.id }}">Eliminar</a>
 </td>
 
 </tr>

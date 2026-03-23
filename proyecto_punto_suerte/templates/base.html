@@ -1,34 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Punto de la Suerte</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
+<div class="container">
+
 <header>
-    <h1>Punto de la Suerte - Lotería Nacional</h1>
-
+    <h1>Punto de la Suerte - Sistema de Facturación</h1>
     <nav>
-<a href="/">Inicio</a>
-<a href="/about">Acerca de</a>
-<a href="/productos">Productos</a>
-<a href="/inventario">Inventario</a>
-<a href="/agregar_producto">Agregar Producto</a>
-</nav>
-
+        <a href="/">Inicio</a>
+        <a href="/inventario">Inventario</a>
+        <a href="/agregar_producto">Agregar Producto</a>
+        <a href="/datos">Datos</a>
+    </nav>
 </header>
-
-<hr>
 
 {% block content %}
 {% endblock %}
 
 <hr>
 
-<footer>
-    <p>© 2026 Punto de la Suerte</p>
+<footer style="text-align:center; margin-top:20px; color:gray;">
+    © 2026 Punto de la Suerte
 </footer>
+
+</div>
 
 </body>
 </html>
