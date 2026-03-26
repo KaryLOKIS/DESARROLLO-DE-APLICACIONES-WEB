@@ -7,13 +7,14 @@ from conexion.conexion import conectar
 
 app = Flask(__name__)
 
-# Página principal
+# ------------------ INICIO ------------------
 @app.route("/")
 def inicio():
     return render_template("index.html")
 
 
-# INVENTARIO (LEER)
+# ------------------ PRODUCTOS ------------------
+
 @app.route("/inventario")
 def inventario():
 
@@ -31,13 +32,11 @@ def inventario():
         cursor.execute("SELECT * FROM productos")
 
     productos = cursor.fetchall()
-
     conn.close()
 
     return render_template("inventario.html", productos=productos)
 
 
-# AGREGAR PRODUCTO
 @app.route("/agregar_producto", methods=["GET", "POST"])
 def agregar_producto():
 
@@ -64,13 +63,11 @@ def agregar_producto():
         except:
             datos = []
 
-        nuevo_producto_json = {
+        datos.append({
             "nombre": nombre,
             "cantidad": cantidad,
             "precio": precio
-        }
-
-        datos.append(nuevo_producto_json)
+        })
 
         with open(ruta_json, "w") as archivo:
             json.dump(datos, archivo, indent=4)
@@ -92,7 +89,6 @@ def agregar_producto():
     return render_template("agregar_producto.html")
 
 
-# ELIMINAR
 @app.route("/eliminar_producto/<int:id>")
 def eliminar_producto(id):
 
@@ -107,7 +103,6 @@ def eliminar_producto(id):
     return redirect("/inventario")
 
 
-# EDITAR
 @app.route("/editar_producto/<int:id>", methods=["GET", "POST"])
 def editar_producto(id):
 
@@ -138,40 +133,120 @@ def editar_producto(id):
     return render_template("editar_producto.html", producto=producto)
 
 
-# Página Acerca de
+# ------------------ USUARIOS ------------------
+
+@app.route("/usuarios")
+def usuarios():
+
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM usuarios")
+    usuarios = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("usuarios.html", usuarios=usuarios)
+
+
+@app.route("/agregar_usuario", methods=["GET", "POST"])
+def agregar_usuario():
+
+    if request.method == "POST":
+
+        nombre = request.form["nombre"]
+        mail = request.form["mail"]
+        password = request.form["password"]
+
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO usuarios (nombre, mail, password) VALUES (%s, %s, %s)",
+            (nombre, mail, password)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/usuarios")
+
+    return render_template("agregar_usuario.html")
+
+
+@app.route("/eliminar_usuario/<int:id>")
+def eliminar_usuario(id):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/usuarios")
+
+
+@app.route("/editar_usuario/<int:id>", methods=["GET", "POST"])
+def editar_usuario(id):
+
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == "POST":
+
+        nombre = request.form["nombre"]
+        mail = request.form["mail"]
+        password = request.form["password"]
+
+        cursor.execute(
+            "UPDATE usuarios SET nombre=%s, mail=%s, password=%s WHERE id_usuario=%s",
+            (nombre, mail, password, id)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/usuarios")
+
+    cursor.execute("SELECT * FROM usuarios WHERE id_usuario=%s", (id,))
+    usuario = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("editar_usuario.html", usuario=usuario)
+
+
+# ------------------ OTROS ------------------
+
 @app.route("/about")
 def about():
     return render_template("about.html")
 
 
-# Página Productos
 @app.route("/productos")
 def productos():
     return render_template("productos.html")
 
 
-# Ruta dinámica
 @app.route("/producto/<nombre>")
 def producto(nombre):
     return render_template("producto_individual.html", nombre=nombre)
 
 
-# VER DATOS (TXT, JSON, CSV)
 @app.route("/datos")
 def ver_datos():
 
-    # TXT
     with open("inventario/data/datos.txt", "r") as archivo:
         datos_txt = archivo.readlines()
 
-    # JSON
     try:
         with open("inventario/data/datos.json", "r") as archivo:
             datos_json = json.load(archivo)
     except:
         datos_json = []
 
-    # CSV
     datos_csv = []
     with open("inventario/data/datos.csv", "r") as archivo:
         reader = csv.reader(archivo)

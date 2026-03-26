@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>👤 Lista de Usuarios</h2>
+
+<br>
+
+<a href="/agregar_usuario">
+    <button>➕ Agregar Usuario</button>
+</a>
+
+<br><br>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Acciones</th>
+    </tr>
+
+    {% for usuario in usuarios %}
+    <tr>
+        <td>{{ usuario.id_usuario }}</td>
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.mail }}</td>
+
+        <td>
+            <a href="/editar_usuario/{{ usuario.id_usuario }}">
+                <button>✏️ Editar</button>
+            </a>
+
+            <a href="/eliminar_usuario/{{ usuario.id_usuario }}">
+                <button style="background:red;">🗑️ Eliminar</button>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}
