@@ -3,9 +3,46 @@ import os
 import csv
 import json
 
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+
 from conexion.conexion import conectar
 
 app = Flask(__name__)
+app.secret_key = "clave_secreta"
+
+# ---------------- LOGIN ----------------
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+
+class Usuario(UserMixin):
+    def __init__(self, id, nombre, email, password):
+        self.id = id
+        self.nombre = nombre
+        self.email = email
+        self.password = password
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM usuarios WHERE id_usuario = %s", (user_id,))
+    user = cursor.fetchone()
+
+    conn.close()
+
+    if user:
+        return Usuario(
+            user["id_usuario"],
+            user["nombre"],
+            user["email"],
+            user["password"]
+        )
+    return None
+
 
 # ------------------ INICIO ------------------
 @app.route("/")
@@ -13,9 +50,79 @@ def inicio():
     return render_template("index.html")
 
 
+# ------------------ LOGIN ------------------
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        password = request.form["password"]
+
+        conn = conectar()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT * FROM usuarios WHERE email=%s AND password=%s",
+            (email, password)
+        )
+
+        user = cursor.fetchone()
+        conn.close()
+
+        if user:
+            usuario = Usuario(
+                user["id_usuario"],
+                user["nombre"],
+                user["email"],
+                user["password"]
+            )
+
+            login_user(usuario)
+            return redirect("/inventario")
+
+        else:
+            return "❌ Usuario o contraseña incorrectos"
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/login")
+
+@app.route("/registro", methods=["GET", "POST"])
+def registro():
+
+    if request.method == "POST":
+
+        nombre = request.form["nombre"]
+        email = request.form["email"]
+        password = request.form["password"]
+
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO usuarios (nombre, email, password) VALUES (%s, %s, %s)",
+            (nombre, email, password)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/login")
+
+    return render_template("registro.html")    
+
+
 # ------------------ PRODUCTOS ------------------
 
 @app.route("/inventario")
+@login_required
 def inventario():
 
     conn = conectar()
@@ -38,6 +145,7 @@ def inventario():
 
 
 @app.route("/agregar_producto", methods=["GET", "POST"])
+@login_required
 def agregar_producto():
 
     if request.method == "POST":
@@ -90,6 +198,7 @@ def agregar_producto():
 
 
 @app.route("/eliminar_producto/<int:id>")
+@login_required
 def eliminar_producto(id):
 
     conn = conectar()
@@ -104,6 +213,7 @@ def eliminar_producto(id):
 
 
 @app.route("/editar_producto/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_producto(id):
 
     conn = conectar()
@@ -136,6 +246,7 @@ def editar_producto(id):
 # ------------------ USUARIOS ------------------
 
 @app.route("/usuarios")
+@login_required
 def usuarios():
 
     conn = conectar()
@@ -150,20 +261,21 @@ def usuarios():
 
 
 @app.route("/agregar_usuario", methods=["GET", "POST"])
+@login_required
 def agregar_usuario():
 
     if request.method == "POST":
 
         nombre = request.form["nombre"]
-        mail = request.form["mail"]
+        email = request.form["email"]
         password = request.form["password"]
 
         conn = conectar()
         cursor = conn.cursor()
 
         cursor.execute(
-            "INSERT INTO usuarios (nombre, mail, password) VALUES (%s, %s, %s)",
-            (nombre, mail, password)
+            "INSERT INTO usuarios (nombre, email, password) VALUES (%s, %s, %s)",
+            (nombre, email, password)
         )
 
         conn.commit()
@@ -175,6 +287,7 @@ def agregar_usuario():
 
 
 @app.route("/eliminar_usuario/<int:id>")
+@login_required
 def eliminar_usuario(id):
 
     conn = conectar()
@@ -189,6 +302,7 @@ def eliminar_usuario(id):
 
 
 @app.route("/editar_usuario/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_usuario(id):
 
     conn = conectar()
@@ -197,12 +311,12 @@ def editar_usuario(id):
     if request.method == "POST":
 
         nombre = request.form["nombre"]
-        mail = request.form["mail"]
+        email = request.form["email"]
         password = request.form["password"]
 
         cursor.execute(
-            "UPDATE usuarios SET nombre=%s, mail=%s, password=%s WHERE id_usuario=%s",
-            (nombre, mail, password, id)
+            "UPDATE usuarios SET nombre=%s, email=%s, password=%s WHERE id_usuario=%s",
+            (nombre, email, password, id)
         )
 
         conn.commit()
