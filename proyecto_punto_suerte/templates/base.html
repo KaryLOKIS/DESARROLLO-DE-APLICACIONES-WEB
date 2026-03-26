@@ -2,32 +2,117 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Punto de la Suerte</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Punto Suerte - Sistema</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        nav {
+            background: #34495e;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #00d1ff;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+        }
+
+        table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        button {
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #219150;
+        }
+
+        input {
+            padding: 8px;
+            width: 200px;
+            margin: 5px;
+        }
+
+        a.btn {
+            background: #2980b9;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        a.btn-danger {
+            background: red;
+        }
+    </style>
 </head>
+
 <body>
 
+<header>
+    💼 Punto Suerte - Sistema de Facturación
+</header>
+
+<nav>
+    <a href="/">Inicio</a>
+    <a href="/inventario">Inventario</a>
+    <a href="/agregar_producto">Agregar Producto</a>
+    <a href="/datos">Datos</a>
+</nav>
+
 <div class="container">
-
-    <header>
-        <h1>🎯 Punto de la Suerte</h1>
-        <nav>
-            <a href="/">Inicio</a>
-            <a href="/inventario">Inventario</a>
-            <a href="/agregar_producto">Agregar</a>
-            <a href="/datos">Datos</a>
-        </nav>
-    </header>
-
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <footer>
-        <p>© 2026 Punto de la Suerte</p>
-    </footer>
-
+    {% block content %}
+    {% endblock %}
 </div>
 
 </body>

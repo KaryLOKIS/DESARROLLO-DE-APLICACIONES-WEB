@@ -43,5 +43,15 @@
         "nombre": "Super Lotto ",
         "cantidad": "200",
         "precio": "2.00"
+    },
+    {
+        "nombre": "Pozo Revancha",
+        "cantidad": "100",
+        "precio": "0.50"
+    },
+    {
+        "nombre": "Gran Lotto",
+        "cantidad": "50",
+        "precio": "3.00"
     }
 ]

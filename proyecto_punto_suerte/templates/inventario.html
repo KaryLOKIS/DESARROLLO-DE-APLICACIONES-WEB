@@ -4,17 +4,15 @@
 
 <h2>📦 Inventario de Productos</h2>
 
-<div class="form-busqueda">
+<div style="margin-bottom:15px;">
     <form method="GET">
         <input type="text" name="buscar" placeholder="🔍 Buscar producto">
         <button type="submit">Buscar</button>
     </form>
 </div>
 
-<br>
-
-<a href="/agregar_producto">
-    <button>➕ Agregar Producto</button>
+<a href="/agregar_producto" class="btn">
+    ➕ Agregar Producto
 </a>
 
 <br><br>
@@ -36,12 +34,12 @@
         <td>$ {{ producto.precio }}</td>
 
         <td>
-            <a href="/editar_producto/{{ producto.id }}">
-                <button>✏️ Editar</button>
+            <a href="/editar_producto/{{ producto.id }}" class="btn">
+                ✏️ Editar
             </a>
 
-            <a href="/eliminar_producto/{{ producto.id }}">
-                <button style="background:red;">🗑️ Eliminar</button>
+            <a href="/eliminar_producto/{{ producto.id }}" class="btn btn-danger">
+                🗑️ Eliminar
             </a>
         </td>
     </tr>
