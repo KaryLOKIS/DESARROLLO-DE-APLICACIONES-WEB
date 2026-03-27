@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -94,6 +94,13 @@
         a.btn-danger {
             background: red;
         }
+
+        .logout-btn {
+            background: red;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -105,11 +112,20 @@
 
 <nav>
     <a href="/">Inicio</a>
-    <a href="/inventario">Inventario</a>
-    <a href="/agregar_producto">Agregar </a>
-    <a href="/datos">Datos</a>
-    <a href="/usuarios">👤 Usuarios</a>
-    
+
+    {% if current_user.is_authenticated %}
+        <a href="/inventario">Inventario</a>
+        <a href="/agregar_producto">Agregar</a>
+        <a href="/datos">Datos</a>
+        <a href="/usuarios">👤 Usuarios</a>
+
+        <span style="color:white;">👋 {{ current_user.nombre }}</span>
+
+        <a href="/logout" class="logout-btn">Cerrar sesión</a>
+    {% else %}
+        <a href="/login">Login</a>
+        <a href="/registro">Registro</a>
+    {% endif %}
 </nav>
 
 <div class="container">
