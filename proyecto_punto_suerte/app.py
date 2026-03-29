@@ -3,13 +3,33 @@ import os
 import csv
 import json
 
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from flask import make_response
+
+# SERVICES
+from services.producto_service import (
+    obtener_productos,
+    agregar_producto as agregar_producto_db,
+    eliminar_producto as eliminar_producto_db,
+    obtener_producto_por_id,
+    actualizar_producto
+)
+
+# FORMS (opcional pero suma puntos)
+from forms.producto_form import ProductoForm
+
+# LOGIN
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from conexion.conexion import conectar
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta"
+
 
 # ---------------- LOGIN ----------------
 login_manager = LoginManager()
@@ -32,7 +52,6 @@ def load_user(user_id):
 
     cursor.execute("SELECT * FROM usuarios WHERE id_usuario = %s", (user_id,))
     user = cursor.fetchone()
-
     conn.close()
 
     if user:
@@ -55,7 +74,6 @@ def inicio():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
 
         email = request.form["email"]
@@ -66,10 +84,8 @@ def login():
 
         cursor.execute("SELECT * FROM usuarios WHERE email=%s", (email,))
         user = cursor.fetchone()
-
         conn.close()
 
-        # 🔐 VALIDAR CONTRASEÑA CIFRADA
         if user and check_password_hash(user["password"], password):
 
             usuario = Usuario(
@@ -99,14 +115,12 @@ def logout():
 
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
-
     if request.method == "POST":
 
         nombre = request.form["nombre"]
         email = request.form["email"]
         password = request.form["password"]
 
-        # 🔐 CIFRAR CONTRASEÑA
         password_cifrado = generate_password_hash(password)
 
         conn = conectar()
@@ -130,23 +144,8 @@ def registro():
 @app.route("/inventario")
 @login_required
 def inventario():
-
-    conn = conectar()
-    cursor = conn.cursor(dictionary=True)
-
     buscar = request.args.get("buscar")
-
-    if buscar:
-        cursor.execute(
-            "SELECT * FROM productos WHERE nombre LIKE %s",
-            (f"%{buscar}%",)
-        )
-    else:
-        cursor.execute("SELECT * FROM productos")
-
-    productos = cursor.fetchall()
-    conn.close()
-
+    productos = obtener_productos(buscar)
     return render_template("inventario.html", productos=productos)
 
 
@@ -155,9 +154,15 @@ def inventario():
 def agregar_producto():
 
     if request.method == "POST":
-        nombre = request.form["nombre"]
-        cantidad = request.form["cantidad"]
-        precio = request.form["precio"]
+
+        form = ProductoForm(request.form)
+
+        if not form.es_valido():
+            return "❌ Todos los campos son obligatorios"
+
+        nombre = form.nombre
+        cantidad = form.cantidad
+        precio = form.precio
 
         # TXT
         with open("inventario/data/datos.txt", "a") as archivo:
@@ -187,16 +192,7 @@ def agregar_producto():
             json.dump(datos, archivo, indent=4)
 
         # MYSQL
-        conn = conectar()
-        cursor = conn.cursor()
-
-        cursor.execute(
-            "INSERT INTO productos (nombre, cantidad, precio) VALUES (%s, %s, %s)",
-            (nombre, cantidad, precio)
-        )
-
-        conn.commit()
-        conn.close()
+        agregar_producto_db(nombre, cantidad, precio)
 
         return redirect("/inventario")
 
@@ -206,15 +202,7 @@ def agregar_producto():
 @app.route("/eliminar_producto/<int:id>")
 @login_required
 def eliminar_producto(id):
-
-    conn = conectar()
-    cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM productos WHERE id = %s", (id,))
-
-    conn.commit()
-    conn.close()
-
+    eliminar_producto_db(id)
     return redirect("/inventario")
 
 
@@ -222,30 +210,23 @@ def eliminar_producto(id):
 @login_required
 def editar_producto(id):
 
-    conn = conectar()
-    cursor = conn.cursor(dictionary=True)
-
     if request.method == "POST":
 
-        nombre = request.form["nombre"]
-        cantidad = request.form["cantidad"]
-        precio = request.form["precio"]
+        form = ProductoForm(request.form)
 
-        cursor.execute(
-            "UPDATE productos SET nombre=%s, cantidad=%s, precio=%s WHERE id=%s",
-            (nombre, cantidad, precio, id)
+        if not form.es_valido():
+            return "❌ Todos los campos son obligatorios"
+
+        actualizar_producto(
+            id,
+            form.nombre,
+            form.cantidad,
+            form.precio
         )
-
-        conn.commit()
-        conn.close()
 
         return redirect("/inventario")
 
-    cursor.execute("SELECT * FROM productos WHERE id=%s", (id,))
-    producto = cursor.fetchone()
-
-    conn.close()
-
+    producto = obtener_producto_por_id(id)
     return render_template("editar_producto.html", producto=producto)
 
 
@@ -254,7 +235,6 @@ def editar_producto(id):
 @app.route("/usuarios")
 @login_required
 def usuarios():
-
     conn = conectar()
     cursor = conn.cursor(dictionary=True)
 
@@ -308,6 +288,59 @@ def ver_datos():
         datos_csv=datos_csv
     )
 
+@app.route("/reporte_pdf")
+@login_required
+def reporte_pdf():
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT nombre, cantidad, precio FROM productos")
+    datos = cursor.fetchall()
+    conn.close()
+
+    # Crear respuesta PDF
+    response = make_response()
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=reporte.pdf'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elementos = []
+
+    estilos = getSampleStyleSheet()
+
+    # TÍTULO
+    elementos.append(Paragraph("REPORTE DE PRODUCTOS - PUNTO DE LA SUERTE", estilos['Title']))
+    elementos.append(Spacer(1, 20))
+
+    # TABLA
+    tabla_datos = [["Nombre", "Cantidad", "Precio", "Total"]]
+
+    total_general = 0
+
+    for fila in datos:
+        nombre, cantidad, precio = fila
+        total = cantidad * float(precio)
+        total_general += total
+
+        tabla_datos.append([nombre, cantidad, precio, round(total, 2)])
+
+    tabla_datos.append(["", "", "TOTAL", round(total_general, 2)])
+
+    tabla = Table(tabla_datos)
+
+    tabla.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.lightgrey)
+    ]))
+
+    elementos.append(tabla)
+
+    doc.build(elementos)
+
+    return response
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
