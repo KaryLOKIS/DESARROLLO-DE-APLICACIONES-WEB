@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, make_response
 import os
 import csv
 import json
+from io import BytesIO
 
+# PDF
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
-from flask import make_response
 
 # SERVICES
 from services.producto_service import (
@@ -18,7 +19,7 @@ from services.producto_service import (
     actualizar_producto
 )
 
-# FORMS (opcional pero suma puntos)
+# FORMS
 from forms.producto_form import ProductoForm
 
 # LOGIN
@@ -71,7 +72,6 @@ def inicio():
 
 
 # ------------------ LOGIN ------------------
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -112,7 +112,6 @@ def logout():
 
 
 # ---------------- REGISTRO ----------------
-
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
@@ -140,7 +139,6 @@ def registro():
 
 
 # ------------------ PRODUCTOS ------------------
-
 @app.route("/inventario")
 @login_required
 def inventario():
@@ -231,7 +229,6 @@ def editar_producto(id):
 
 
 # ------------------ USUARIOS ------------------
-
 @app.route("/usuarios")
 @login_required
 def usuarios():
@@ -246,23 +243,7 @@ def usuarios():
     return render_template("usuarios.html", usuarios=usuarios)
 
 
-# ------------------ OTROS ------------------
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-
-@app.route("/productos")
-def productos():
-    return render_template("productos.html")
-
-
-@app.route("/producto/<nombre>")
-def producto(nombre):
-    return render_template("producto_individual.html", nombre=nombre)
-
-
+# ------------------ DATOS ------------------
 @app.route("/datos")
 def ver_datos():
 
@@ -288,9 +269,12 @@ def ver_datos():
         datos_csv=datos_csv
     )
 
+
+# ------------------ PDF ------------------
 @app.route("/reporte_pdf")
 @login_required
 def reporte_pdf():
+
     conn = conectar()
     cursor = conn.cursor()
 
@@ -298,21 +282,16 @@ def reporte_pdf():
     datos = cursor.fetchall()
     conn.close()
 
-    # Crear respuesta PDF
-    response = make_response()
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=reporte.pdf'
+    buffer = BytesIO()
 
-    doc = SimpleDocTemplate(response, pagesize=letter)
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
     elementos = []
 
     estilos = getSampleStyleSheet()
 
-    # TÍTULO
     elementos.append(Paragraph("REPORTE DE PRODUCTOS - PUNTO DE LA SUERTE", estilos['Title']))
     elementos.append(Spacer(1, 20))
 
-    # TABLA
     tabla_datos = [["Nombre", "Cantidad", "Precio", "Total"]]
 
     total_general = 0
@@ -340,8 +319,15 @@ def reporte_pdf():
 
     doc.build(elementos)
 
-    return response
+    buffer.seek(0)
 
+    return make_response(buffer.getvalue(), 200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'inline; filename=reporte.pdf'
+    })
+
+
+# ------------------ RUN ------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
