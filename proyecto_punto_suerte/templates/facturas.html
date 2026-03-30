@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>📄 Facturas Generadas</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for f in facturas %}
+        <tr>
+            <td>{{ f.id_factura }}</td>
+            <td>{{ f.nombre }}</td>
+            <td>{{ f.fecha }}</td>
+            <td>$ {{ f.total }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

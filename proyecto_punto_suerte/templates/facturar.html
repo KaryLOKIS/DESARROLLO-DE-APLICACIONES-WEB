@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>🧾 Crear Factura</h2>
+
+<form method="POST">
+
+    <label>Cliente:</label><br>
+    <select name="cliente" required>
+        {% for c in clientes %}
+            <option value="{{ c.id_cliente }}">{{ c.nombre }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Producto:</label><br>
+    <select name="producto" required>
+        {% for p in productos %}
+            <option value="{{ p.id }}">
+                {{ p.nombre }} - ${{ p.precio }}
+            </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Cantidad:</label><br>
+    <input type="number" name="cantidad" required><br><br>
+
+    <button type="submit">💾 Generar Factura</button>
+
+</form>
+
+{% endblock %}

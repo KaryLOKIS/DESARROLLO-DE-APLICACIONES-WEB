@@ -3,6 +3,7 @@ import os
 import csv
 import json
 from io import BytesIO
+from datetime import datetime
 
 # PDF
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -268,9 +269,74 @@ def ver_datos():
         datos_json=datos_json,
         datos_csv=datos_csv
     )
+@app.route("/facturar", methods=["GET", "POST"])
+@login_required
+def facturar():
 
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
 
-# ------------------ PDF ------------------
+    # Obtener clientes y productos
+    cursor.execute("SELECT * FROM clientes")
+    clientes = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM productos")
+    productos = cursor.fetchall()
+
+    if request.method == "POST":
+
+        cliente_id = request.form["cliente"]
+        producto_id = request.form["producto"]
+        cantidad = int(request.form["cantidad"])
+
+        # Obtener precio del producto
+        cursor.execute("SELECT precio FROM productos WHERE id=%s", (producto_id,))
+        producto = cursor.fetchone()
+
+        precio = float(producto["precio"])
+        total = precio * cantidad
+
+        # INSERTAR FACTURA
+        cursor.execute(
+            "INSERT INTO facturas (id_cliente, total) VALUES (%s, %s)",
+            (cliente_id, total)
+        )
+
+        id_factura = cursor.lastrowid
+
+        # INSERTAR DETALLE
+        cursor.execute(
+            "INSERT INTO detalle_factura (id_factura, id_producto, cantidad, precio) VALUES (%s, %s, %s, %s)",
+            (id_factura, producto_id, cantidad, precio)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/facturas")
+
+    conn.close()
+    return render_template("facturar.html", clientes=clientes, productos=productos)
+
+@app.route("/facturas")
+@login_required
+def ver_facturas():
+
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT f.id_factura, c.nombre, f.fecha, f.total
+        FROM facturas f
+        JOIN clientes c ON f.id_cliente = c.id_cliente
+    """)
+
+    facturas = cursor.fetchall()
+    conn.close()
+
+    return render_template("facturas.html", facturas=facturas)    
+
+# ------------------ PDF PROFESIONAL ------------------
 @app.route("/reporte_pdf")
 @login_required
 def reporte_pdf():
@@ -289,9 +355,16 @@ def reporte_pdf():
 
     estilos = getSampleStyleSheet()
 
-    elementos.append(Paragraph("REPORTE DE PRODUCTOS - PUNTO DE LA SUERTE", estilos['Title']))
+    # 🧾 ENCABEZADO PROFESIONAL
+    elementos.append(Paragraph("PUNTO DE LA SUERTE", estilos['Title']))
+    elementos.append(Paragraph("Sistema de Facturación", estilos['Normal']))
+    elementos.append(Spacer(1, 10))
+
+    fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
+    elementos.append(Paragraph(f"Fecha: {fecha}", estilos['Normal']))
     elementos.append(Spacer(1, 20))
 
+    # TABLA
     tabla_datos = [["Nombre", "Cantidad", "Precio", "Total"]]
 
     total_general = 0
