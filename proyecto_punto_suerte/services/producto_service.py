@@ -1,6 +1,6 @@
 from conexion.conexion import conectar
 
-# OBTENER TODOS LOS PRODUCTOS
+# OBTENER PRODUCTOS
 def obtener_productos(buscar=None):
     conn = conectar()
     cursor = conn.cursor(dictionary=True)
@@ -33,7 +33,7 @@ def agregar_producto(nombre, cantidad, precio):
     conn.close()
 
 
-# ELIMINAR PRODUCTO
+# ELIMINAR PRODUCTO ✅ CORREGIDO
 def eliminar_producto(id):
     conn = conectar()
     cursor = conn.cursor()
@@ -44,7 +44,7 @@ def eliminar_producto(id):
     conn.close()
 
 
-# OBTENER PRODUCTO POR ID
+# OBTENER PRODUCTO POR ID ✅ CORREGIDO
 def obtener_producto_por_id(id):
     conn = conectar()
     cursor = conn.cursor(dictionary=True)
@@ -57,7 +57,7 @@ def obtener_producto_por_id(id):
     return producto
 
 
-# ACTUALIZAR PRODUCTO
+# ACTUALIZAR PRODUCTO ✅ CORREGIDO
 def actualizar_producto(id, nombre, cantidad, precio):
     conn = conectar()
     cursor = conn.cursor()

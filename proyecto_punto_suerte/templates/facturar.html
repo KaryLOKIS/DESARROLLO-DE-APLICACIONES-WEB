@@ -1,32 +1,78 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block contenido %}
 
-<h2>🧾 Crear Factura</h2>
+<div class="card p-4">
 
-<form method="POST">
+    <h3 class="mb-4">🧾 Generar Factura</h3>
 
-    <label>Cliente:</label><br>
-    <select name="cliente" required>
-        {% for c in clientes %}
-            <option value="{{ c.id_cliente }}">{{ c.nombre }}</option>
-        {% endfor %}
-    </select><br><br>
+    <form method="POST">
 
-    <label>Producto:</label><br>
-    <select name="producto" required>
-        {% for p in productos %}
-            <option value="{{ p.id }}">
-                {{ p.nombre }} - ${{ p.precio }}
-            </option>
-        {% endfor %}
-    </select><br><br>
+        <!-- CLIENTE -->
+        <div class="mb-3">
+            <label class="form-label">Cliente</label>
+            <select name="cliente" class="form-select" required>
+                {% for c in clientes %}
+                <option value="{{ c.id_usuario }}">{{ c.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Cantidad:</label><br>
-    <input type="number" name="cantidad" required><br><br>
+        <!-- PRODUCTO -->
+        <div class="mb-3">
+            <label class="form-label">Producto</label>
+            <select name="producto" id="producto" class="form-select" onchange="mostrarPrecio()" required>
+                {% for p in productos %}
+                <option value="{{ p.id }}" data-precio="{{ p.precio }}">
+                    {{ p.nombre }} - ${{ p.precio }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <button type="submit">💾 Generar Factura</button>
+        <!-- PRECIO -->
+        <div class="mb-3">
+            <label class="form-label">Precio</label>
+            <input type="text" id="precio" class="form-control" readonly>
+        </div>
 
-</form>
+        <!-- CANTIDAD -->
+        <div class="mb-3">
+            <label class="form-label">Cantidad</label>
+            <input type="number" name="cantidad" id="cantidad" class="form-control" onkeyup="calcularTotal()" required>
+        </div>
+
+        <!-- TOTAL -->
+        <div class="mb-3">
+            <label class="form-label">Total</label>
+            <input type="text" id="total" class="form-control" readonly>
+        </div>
+
+        <button class="btn btn-success">💾 Facturar</button>
+
+    </form>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+function mostrarPrecio() {
+    let select = document.getElementById("producto");
+    let precio = select.options[select.selectedIndex].getAttribute("data-precio");
+    document.getElementById("precio").value = precio;
+    calcularTotal();
+}
+
+function calcularTotal() {
+    let precio = document.getElementById("precio").value;
+    let cantidad = document.getElementById("cantidad").value;
+
+    let total = precio * cantidad;
+    document.getElementById("total").value = total || 0;
+}
+
+// cargar precio al iniciar
+window.onload = mostrarPrecio;
+</script>
 
 {% endblock %}

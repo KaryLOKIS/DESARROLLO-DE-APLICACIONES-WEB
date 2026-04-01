@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Factura</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .factura {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 700px;
+            margin: auto;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .info {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background: green;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="factura">
+
+    <h2 style="color:red;">PRUEBA FACTURA BONITA</h2>
+
+    <div class="info">
+        <p><b>Cliente:</b> {{ factura.cliente }}</p>
+        <p><b>Fecha:</b> {{ factura.fecha }}</p>
+    </div>
+
+    <table>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+        </tr>
+
+        {% for d in detalles %}
+        <tr>
+            <td>{{ d.nombre }}</td>
+            <td>{{ d.cantidad }}</td>
+            <td>${{ d.precio }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="total">
+        <b>Total: ${{ factura.total }}</b>
+    </div>
+
+    <a href="#" class="btn">
+        📄 Descargar PDF
+    </a>
+
+</div>
+
+</body>
+</html>

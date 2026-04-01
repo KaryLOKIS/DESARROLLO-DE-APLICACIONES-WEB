@@ -1,21 +1,42 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block contenido %}
 
-<h2>🔐 Iniciar Sesión</h2>
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    
+    <div class="col-md-5">
+        
+        <div class="card p-4 shadow-lg">
 
-<form method="POST">
+            <h3 class="text-center mb-4">🔐 Iniciar Sesión</h3>
 
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br><br>
+            <form method="POST">
 
-    <label>Contraseña:</label><br>
-    <input type="password" name="password" required><br><br>
+                <div class="mb-3">
+                    <label class="form-label">Correo electrónico</label>
+                    <input type="email" name="email" class="form-control" placeholder="Ej: usuario@gmail.com" required>
+                </div>
 
-    <button type="submit">Ingresar</button>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
 
-</form>
+                <button class="btn btn-primary w-100">Ingresar</button>
 
-<p>¿No tienes cuenta? <a href="/registro">Regístrate aquí</a></p>
+            </form>
+
+            <hr>
+
+            <p class="text-center">
+                ¿No tienes cuenta? 
+                <a href="/registro">Regístrate aquí</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+
+<div class="card p-5 text-center">
+
+    <h1>🎉 Número Ganador</h1>
+
+    <h2 class="display-3 text-danger">{{ numero }}</h2>
+
+    <hr>
+
+    {% if ganadores %}
+        <h3>Ganadores:</h3>
+
+        {% for g in ganadores %}
+            <p>🏆 {{ g.nombre }}</p>
+        {% endfor %}
+
+    {% else %}
+        <p>❌ No hubo ganadores</p>
+    {% endif %}
+
+    <a href="/loteria" class="btn btn-primary mt-3">
+        ⬅ Volver
+    </a>
+
+</div>
+
+{% endblock %}

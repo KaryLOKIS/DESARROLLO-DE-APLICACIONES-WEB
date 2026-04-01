@@ -1,40 +1,93 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block contenido %}
 
-<h3>📦 Gestión de Inventario</h3>
+<div class="card p-4">
 
-<form method="GET" class="d-flex mb-3">
-    <input type="text" name="buscar" class="form-control me-2" placeholder="Buscar producto...">
-    <button class="btn btn-primary">Buscar</button>
-</form>
+    <h3 class="mb-4">📦 Gestión de Inventario</h3>
 
-<a href="/agregar_producto" class="btn btn-success mb-3">➕ Nuevo Producto</a>
-<a href="/reporte_pdf" class="btn btn-secondary mb-3">📄 Generar PDF</a>
+    <!-- BUSCAR -->
+    <form method="GET" class="d-flex mb-3">
+        <input type="text" name="buscar" class="form-control me-2" placeholder="Buscar producto...">
+        <button class="btn btn-primary">Buscar</button>
+    </form>
 
-<table class="table table-striped table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>Nombre</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for p in productos %}
-        <tr>
-            <td>{{ p.nombre }}</td>
-            <td>{{ p.cantidad }}</td>
-            <td>${{ p.precio }}</td>
-            <td>
-                <a href="/editar_producto/{{ p.id }}" class="btn btn-primary btn-sm">Editar</a>
-                <a href="/eliminar_producto/{{ p.id }}" class="btn btn-danger btn-sm"
-                   onclick="return confirm('¿Eliminar producto?')">Eliminar</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- BOTONES -->
+    <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+
+        <div>
+            <a href="/agregar_producto" class="btn btn-success">
+                ➕ Nuevo Producto
+            </a>
+            <a href="/reporte_pdf" class="btn btn-secondary">
+                📄 PDF
+            </a>
+        </div>
+
+        <div>
+            <a href="/exportar_json" class="btn btn-warning btn-sm">JSON</a>
+            <a href="/exportar_csv" class="btn btn-info btn-sm">CSV</a>
+            <a href="/exportar_txt" class="btn btn-dark btn-sm">TXT</a>
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-responsive">
+        <table class="table table-hover text-center align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if productos and productos|length > 0 %}
+                    {% for p in productos %}
+                    <tr>
+                        <td>{{ p.id }}</td> <!-- 🔥 CAMBIO IMPORTANTE -->
+                        <td>{{ p.nombre }}</td>
+                        <td>
+                            <span class="badge bg-info">
+                                {{ p.cantidad }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                ${{ p.precio }}
+                            </span>
+                        </td>
+                        <td>
+                            <!-- 🔥 AQUÍ ESTABA EL ERROR -->
+                            <a href="/editar_producto/{{ p.id }}" class="btn btn-primary btn-sm">
+                                ✏ Editar
+                            </a>
+
+                            <a href="/eliminar_producto/{{ p.id }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Seguro que deseas eliminar este producto?')">
+                                🗑 Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5">
+                            ⚠ No hay productos registrados
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
 
 {% endblock %}

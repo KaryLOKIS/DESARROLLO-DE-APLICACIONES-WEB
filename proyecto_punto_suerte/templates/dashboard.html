@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4 fw-bold">📊 Panel de Control</h2>
+
+    <div class="row g-4">
+
+        <!-- TOTAL -->
+        <div class="col-md-4">
+            <div class="card text-center bg-success text-white p-4 shadow">
+                <h5>Total Ventas</h5>
+                <h2>${{ total }}</h2>
+            </div>
+        </div>
+
+        <!-- CANTIDAD -->
+        <div class="col-md-4">
+            <div class="card text-center bg-primary text-white p-4 shadow">
+                <h5>Boletos Vendidos</h5>
+                <h2>{{ cantidad }}</h2>
+            </div>
+        </div>
+
+        <!-- ÚLTIMO -->
+        <div class="col-md-4">
+            <div class="card text-center bg-danger text-white p-4 shadow">
+                <h5>Último Número</h5>
+                <h2>{{ ultimo }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

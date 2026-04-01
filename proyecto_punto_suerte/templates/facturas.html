@@ -1,29 +1,40 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block contenido %}
 
-<h2>📄 Facturas Generadas</h2>
+<div class="card p-4">
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Total</th>
-        </tr>
-    </thead>
+    <h3 class="mb-4">🧾 Facturas Registradas</h3>
 
-    <tbody>
-        {% for f in facturas %}
-        <tr>
-            <td>{{ f.id_factura }}</td>
-            <td>{{ f.nombre }}</td>
-            <td>{{ f.fecha }}</td>
-            <td>$ {{ f.total }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table class="table table-striped text-center">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% if facturas %}
+                {% for f in facturas %}
+                <tr>
+                    <td>{{ f.id_factura }}</td>
+                    <td>{{ f.nombre }}</td>
+                    <td>{{ f.fecha }}</td>
+                    <td>${{ f.total }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">⚠ No hay facturas registradas</td>
+                </tr>
+            {% endif %}
+        </tbody>
+
+    </table>
+
+</div>
 
 {% endblock %}
